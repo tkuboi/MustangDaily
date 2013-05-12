@@ -15,9 +15,9 @@ public class ArticleFragment extends Fragment {
 	private TextView m_textView;
 	private String m_content;
 	private String style = "<style type='text/css'>" +
-			"img {height:250px; width:250px}" +
-			".toggle-head-open,.toggle-head-close {display:none;}" +
-			"</style>";
+            "img {height:250px; width:250px}" +
+            ".toggle-head-open,.toggle-head-close {display:none;}" +
+            "</style>";
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -36,7 +36,8 @@ public class ArticleFragment extends Fragment {
 	public void onResume() {
 		super.onResume();
 		m_articleView = (WebView) getView().findViewById(R.id.webView);
-		m_articleView.loadData(style + m_content, "text/html; charset=UTF-8", null);
+		//m_articleView.loadData(style + m_content, "text/html; charset=UTF-8", null);
+		m_articleView.loadDataWithBaseURL(null, style + m_content, "text/html", "UTF-8", null);
 	}
 	
 	

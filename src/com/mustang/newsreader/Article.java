@@ -11,43 +11,45 @@ public class Article {
     private ArrayList<String> imgsrc;
     private ArrayList<String> categories;
 
+    public Article() {
+    }
+    
     public Article(String title, String summary, String content) {
         this.title = title;
         this.description = summary;
         this.content = content;
     }
-    public Article(String title, String summary, String content, String pubdate, ArrayList<String> cat) {
-        this.title = title;
-        this.description = summary;
-        this.content = content;
-        this.categories = cat;
-        this.pubdate = pubdate;
-    }
+    
+//    public Article(String title, String summary, String content, String pubdate, ArrayList<String> categories) {
+//        this.title = title;
+//        this.description = summary;
+//        this.content = content;
+//        this.categories = categories;
+//        this.pubdate = pubdate;
+//        this.imgsrc = imgsrc;
+//    }
 
 	public String getTitle() {
-		// TODO Auto-generated method stub
-		return title;
+		return this.title;
 	}
 
 	public String getDescription() {
-		// TODO Auto-generated method stub
-		return description;
+		return this.description;
 	}
 
 	public String getContent() {
-		// TODO Auto-generated method stub
-		return content;
+		return this.content;
 	}
 
 	public String getImgsrcAt(int idx) {
-		if (imgsrc.size() >= idx + 1)
-		    return imgsrc.get(idx);
+		if (this.imgsrc.size() >= idx + 1)
+		    return this.imgsrc.get(idx);
 		else
 			return null;
 	}
 
 	public String getPubdate() {
-		return pubdate;
+		return this.pubdate;
 	}
 
 	public void setPubdate(String pubdate) {
@@ -55,7 +57,7 @@ public class Article {
 	}
 
 	public String getLink() {
-		return link;
+		return this.link;
 	}
 
 	public void setLink(String link) {
@@ -63,7 +65,7 @@ public class Article {
 	}
 
 	public ArrayList<String> getCategories() {
-		return categories;
+		return this.categories;
 	}
 
 	public void setCategories(ArrayList<String> categories) {
@@ -71,10 +73,10 @@ public class Article {
 	}
 
 	public int addCategory(String category){
-		if (categories == null)
-			categories = new ArrayList<String>();
-		categories.add(category);
-		return categories.size();
+		if (this.categories == null)
+			this.categories = new ArrayList<String>();
+		this.categories.add(category);
+		return this.categories.size();
 	}
 	
 	public void setTitle(String title) {
@@ -98,9 +100,9 @@ public class Article {
 	}
 	
 	public int addImgsrc(String str) {
-		if (imgsrc == null)
-			imgsrc = new ArrayList<String>();
+		if (this.imgsrc == null)
+			this.imgsrc = new ArrayList<String>();
 		this.imgsrc.add(str);
-		return imgsrc.size();
+		return this.imgsrc.size();
 	}
 }

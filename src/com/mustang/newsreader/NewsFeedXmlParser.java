@@ -3,7 +3,6 @@ package com.mustang.newsreader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.List;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -18,7 +17,7 @@ public class NewsFeedXmlParser {
    
     public ArrayList<Article> parse(InputStream in) throws XmlPullParserException, IOException {
         try {
-        	Log.d("dedug","in parse");
+        	//Log.d("dedug","in parse");
             XmlPullParser parser = Xml.newPullParser();
             parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
             parser.setInput(in, null);
@@ -33,14 +32,12 @@ public class NewsFeedXmlParser {
 
     private int readFeed(XmlPullParser parser) throws XmlPullParserException, IOException {
     	int readCount = 0;
-        Log.d("debug","readFeed");
+        //Log.d("debug","readFeed");
         if(parser == null)
         	Log.d("debug", "parser is null");
         parser.require(XmlPullParser.START_TAG, ns, "rss");
-        Log.d("readFeed","before while");
         while (parser.next() != XmlPullParser.END_TAG) {
 	       if (parser.getEventType() != XmlPullParser.START_TAG) {
-	    	   Log.d("readFeed","continue");
 	           continue;
 	       }
 	       String name = parser.getName();
@@ -60,10 +57,8 @@ public class NewsFeedXmlParser {
         if(parser == null)
         	Log.d("debug", "parser is null");
         parser.require(XmlPullParser.START_TAG, null, "channel");
-        Log.d("readFeed","before while");
         while (parser.next() != XmlPullParser.END_TAG) {
 	       if (parser.getEventType() != XmlPullParser.START_TAG) {
-	    	   Log.d("readFeed","continue");
 	           continue;
 	       }
 	       String name = parser.getName();
@@ -79,38 +74,30 @@ public class NewsFeedXmlParser {
 
     private Article readItem(XmlPullParser parser) throws XmlPullParserException, IOException {
         parser.require(XmlPullParser.START_TAG, null, "item");
-        String title = null;
-        String description = null;
-        String link = null;
-        String pubDate = null;
-        String content = null;
-        ArrayList<String> category = new ArrayList<String>();
-        Log.d("readItem","hi!");
+        Article article = new Article();
         while (parser.next() != XmlPullParser.END_TAG) {
             if (parser.getEventType() != XmlPullParser.START_TAG) {
                 continue;
             }
             String name = parser.getName();
-            Log.d("readItem",name);
             if (name.equals("title")) {
-                title = readTitle(parser);
-                Log.d("readItem",title);
+                article.setTitle(readTitle(parser));
             } else if (name.equals("pubDate")) {
-                pubDate = readPubDate(parser);
+                article.setPubdate(readPubDate(parser));
             } else if (name.equals("category")) {
-                category.add(readCategory(parser));
+                article.addCategory(readCategory(parser));
             } else if (name.equals("description")) {
-                description = readDescription(parser);
+                article.setDescription(readDescription(parser));
             } else if (name.equals("content:encoded")) {
-                content = readContent(parser);
+                article.setContent(readContent(parser));
             } else if (name.equals("link")) {
-                link = readLink(parser);
-                Log.d("readItem",link);
+                article.setLink(readLink(parser));
             } else {
                 skip(parser);
             }
         }
-        return new Article(title, description, content, pubDate, category);
+        
+        return article;
     }
 
     // Processes title tags in the feed.
@@ -160,7 +147,7 @@ public class NewsFeedXmlParser {
         parser.require(XmlPullParser.END_TAG, null, "pubDate");
         return pubdate;
     }
-
+    
     // For the tags title and summary, extracts their text values.
     private String readText(XmlPullParser parser) throws IOException, XmlPullParserException {
         String result = "";

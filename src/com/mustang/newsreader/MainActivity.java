@@ -15,18 +15,12 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.app.Activity;
 import android.content.Context;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.Menu;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.Toast;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ListView;
 
 public class MainActivity extends FragmentActivity 
                        implements OnArticleSelectedListener {
@@ -115,7 +109,7 @@ public class MainActivity extends FragmentActivity
   // Given a URL, establishes an HttpUrlConnection and retrieves
   // the web page content as a InputStream, which it returns as
   // a string.
-  private List downloadXml(String myurl) throws IOException {
+  private List<Article> downloadXml(String myurl) throws IOException {
       InputStream is = null;
           
       try {
