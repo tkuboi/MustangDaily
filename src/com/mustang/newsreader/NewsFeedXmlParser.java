@@ -2,6 +2,7 @@ package com.mustang.newsreader;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringReader;
 import java.util.ArrayList;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -13,7 +14,14 @@ import android.util.Xml;
 public class NewsFeedXmlParser {
     // We don't use namespaces
     private static final String ns = null;
+    
     private ArrayList<Article> m_arrArticles;
+    private ArrayList<String> imgSrcList;
+    
+    public NewsFeedXmlParser() {
+        m_arrArticles = new ArrayList<Article>();
+        imgSrcList = new ArrayList<String>();
+    }
    
     public ArrayList<Article> parse(InputStream in) throws XmlPullParserException, IOException {
         try {
@@ -23,7 +31,7 @@ public class NewsFeedXmlParser {
             parser.setInput(in, null);
             parser.nextTag();
             int count = readFeed(parser);
-            Log.d("dedug","number of articles = " + count);
+            Log.d("articleCount","number of articles = " + count);
             return m_arrArticles;
         } finally {
             in.close();
@@ -52,7 +60,6 @@ public class NewsFeedXmlParser {
     }
 
     private int readChannel(XmlPullParser parser) throws XmlPullParserException, IOException {
-    	m_arrArticles = new ArrayList<Article>();
         Log.d("debug","readFeed");
         if(parser == null)
         	Log.d("debug", "parser is null");
@@ -75,6 +82,7 @@ public class NewsFeedXmlParser {
     private Article readItem(XmlPullParser parser) throws XmlPullParserException, IOException {
         parser.require(XmlPullParser.START_TAG, null, "item");
         Article article = new Article();
+        imgSrcList.clear();
         while (parser.next() != XmlPullParser.END_TAG) {
             if (parser.getEventType() != XmlPullParser.START_TAG) {
                 continue;
@@ -96,6 +104,7 @@ public class NewsFeedXmlParser {
                 skip(parser);
             }
         }
+        article.setImgsrc(imgSrcList);
         
         return article;
     }
@@ -148,13 +157,44 @@ public class NewsFeedXmlParser {
         return pubdate;
     }
     
+    private void readResult(char[] ch) {
+        StringBuilder sb = new StringBuilder();
+        
+        for(int i = 0; i < ch.length; i++) {
+            
+            if((ch.length - i) > 6 && ch[i] == 'h' && ch[i+1] == 't' && ch[i + 2] == 't' && 
+                    ch[i + 3] == 'p' && ch[i + 4] == ':' && ch[i + 5] == '/' && 
+                    ch[i + 6] == '/') {
+                sb = new StringBuilder();
+                
+                for(int j = i; j < ch.length; j++) {
+                    if(ch[j] == '.' && ch[j + 1] == 'p' && ch[j + 2] == 'n' && ch[j + 3] == 'g') {
+                        sb.append(".png");
+                        imgSrcList.add(sb.toString());
+                        
+                        i = j + 4;
+                        break;
+                    }
+                    else if(ch[j] == '>'){
+                        break;
+                    }
+                    else {
+                        sb.append(ch[j]);
+                    }
+                }
+            }
+        }
+    }
+    
     // For the tags title and summary, extracts their text values.
     private String readText(XmlPullParser parser) throws IOException, XmlPullParserException {
         String result = "";
         if (parser.next() == XmlPullParser.TEXT) {
             result = parser.getText();
+            readResult(result.toCharArray());
             parser.nextTag();
         }
+        
         return result;
     }
 

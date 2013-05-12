@@ -5,32 +5,56 @@
     android:focusable="false"
     android:focusableInTouchMode="false"
     android:orientation="vertical" >
-
-         
-        <TextView
+    
+    <!-- 
+    <LinearLayout
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:orientation="vertical" >
+	    
+        <WebView 
+		    android:id="@+id/first_imageView"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:focusable="false"
+		    android:focusableInTouchMode="false" />
+	     
+	    <TextView
+		    android:id="@+id/first_titleView"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:textSize="26sp"
+		    android:focusable="false"
+		    android:focusableInTouchMode="false"
+		    android:textIsSelectable="true" />
+	    
+	    <TextView
+		    android:id="@+id/first_descView"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:textSize="16sp"
+		    android:focusable="false"
+		    android:focusableInTouchMode="false"
+		    android:textIsSelectable="true" />
+    </LinearLayout>
+    -->
+    
+    <TextView
         android:id="@+id/titleView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="26sp"
         android:focusable="false"
         android:focusableInTouchMode="false"
-        android:text="title" />
-        
-        <TextView
+        android:textIsSelectable="true" />
+    
+    <TextView
         android:id="@+id/descView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="16sp"
         android:focusable="false"
         android:focusableInTouchMode="false"
-        android:text="description" />
-        
-    <!--  
-    <WebView 
-        android:id="@+id/imageView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:focusable="false"
-        android:focusableInTouchMode="false" />
-    -->
+        android:textIsSelectable="true" />
+    
 </LinearLayout>
