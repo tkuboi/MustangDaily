@@ -26,25 +26,32 @@ public class MainActivity extends FragmentActivity
                        implements OnArticleSelectedListener {
 
 	private static String feedurl = "http://mustangdaily.net/feed/";
+	private static String listTag = "TAG_LIST";
+	private static String itemTag = "TAG_ITEM";
 	private ArrayList<Article> m_arrItems;
 	private ArticleListFragment m_listFragment;
 	private ArticleFragment m_articleFragment;
-	//protected ItemListAdapter m_adapter;
-	//protected ListView m_vwItemLayout;
+	private DataHandler m_dataHandler;
+	private String m_activeFragTag; //tag of active fragment when the orientation changed
+	private int m_articlePosition;  //postition of article viewed when the orientation changed
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		FragmentManager fragmentManager = getSupportFragmentManager();
+		//this.m_arrItems = new ArrayList<Article>();
+		m_dataHandler = DataHandler.getInstance();
+		this.m_arrItems = m_dataHandler.getArticles();
+	    FragmentManager fragmentManager = getSupportFragmentManager();
 		FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 		m_listFragment = new ArticleListFragment();
-		fragmentTransaction.add(R.id.fragment_container, m_listFragment);
+		Log.d("onCreate", "after new ArticleListFragment");
+		//replace fragment instead of adding it for handling orientation change
+		fragmentTransaction.replace(R.id.fragment_container, m_listFragment, listTag);
+		fragmentTransaction.addToBackStack(listTag);
 		fragmentTransaction.commit();
-		
-		this.m_arrItems = new ArrayList<Article>();
-
-		xmlHandler();
+		if (savedInstanceState == null || this.m_arrItems.size() == 0) //download xml only in fresh-start
+		    xmlHandler();
 	}
 
 	@Override
@@ -53,8 +60,35 @@ public class MainActivity extends FragmentActivity
 		getMenuInflater().inflate(R.menu.main, menu);
 		return true;
 	}
+	
+	@Override
+	public void onSaveInstanceState(Bundle outState){
+		m_dataHandler.setArticles(m_arrItems);
+		String tag = getActiveFragment();
+		if (tag != null && !tag.contentEquals(listTag)) {
+			outState.putString("FRAGMENT_TAG", tag);
+			outState.putInt("ARTICLE_POSITION", m_articlePosition);
+		}
+		
+		super.onSaveInstanceState(outState);
+		Log.d("onSaveInstanceState","onSaveInstanceState");
+	}
 
-    // When user clicks button, calls AsyncTask.
+	@Override
+	public void onRestoreInstanceState(Bundle inState){
+		super.onRestoreInstanceState(inState);
+		m_dataHandler = DataHandler.getInstance();
+		m_arrItems = m_dataHandler.getArticles();
+		String tag = inState.getString("FRAGMENT_TAG");
+		if (tag != null) {
+			this.m_articlePosition = inState.getInt("ARTICLE_POSITION");
+			this.m_activeFragTag = tag;
+			openArticleFragment(this.m_articlePosition);
+		}
+		Log.d("onRestoreInstanceState","onRestoreInstanceState");
+	}
+	
+    // When user strat the app, calls AsyncTask.
     // Before attempting to fetch the URL, makes sure that there is a network connection.
     public void xmlHandler() {
         // Gets the URL from the UI's text field.
@@ -94,6 +128,7 @@ public class MainActivity extends FragmentActivity
         protected void onPostExecute(String result) {
         	if (result.equalsIgnoreCase("success")){
         		Log.d("parser",result);
+        		//m_listFragment.notifyDataChanged();
         		int count = 0;
         		for(Article a : m_arrItems){
             		count = m_listFragment.addArticle(a);
@@ -106,59 +141,72 @@ public class MainActivity extends FragmentActivity
         
     }
     
-  // Given a URL, establishes an HttpUrlConnection and retrieves
-  // the web page content as a InputStream, which it returns as
-  // a string.
-  private List<Article> downloadXml(String myurl) throws IOException {
-      InputStream is = null;
+    // Given a URL, establishes an HttpUrlConnection and retrieves
+    // the web page content as a InputStream, which it returns as
+    // a string.
+    private List<Article> downloadXml(String myurl) throws IOException {
+       InputStream is = null;
           
-      try {
-          URL url = new URL(myurl);
-          HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-          conn.setReadTimeout(10000 /* milliseconds */);
-          conn.setConnectTimeout(15000 /* milliseconds */);
-          conn.setRequestMethod("GET");
-          conn.setDoInput(true);
-          // Starts the query
-          conn.connect();
-          int response = conn.getResponseCode();
-          Log.d("DEBUG", "The response is: " + response);
-          is = conn.getInputStream();
-
-          NewsFeedXmlParser parser = new NewsFeedXmlParser();
-          ArrayList<Article> items = parser.parse(is);
-          return items;
-          
-      // Makes sure that the InputStream is closed after the app is
-      // finished using it.
-      } catch (XmlPullParserException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-	} finally {
-          if (is != null) {
-              is.close();
-          } 
-      }
-	return null;
-  }
-
-@Override
-public void onArticleSelected(String content) {
-	FragmentManager fragmentManager = getSupportFragmentManager();
-	FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-	m_articleFragment = new ArticleFragment();
+       try {
+           URL url = new URL(myurl);
+           HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+           conn.setReadTimeout(10000 /* milliseconds */);
+	       conn.setConnectTimeout(15000 /* milliseconds */);
+	       conn.setRequestMethod("GET");
+	       conn.setDoInput(true);
+	       // Starts the query
+	       conn.connect();
+	       int response = conn.getResponseCode();
+	       Log.d("DEBUG", "The response is: " + response);
+	       is = conn.getInputStream();
 	
-	fragmentTransaction.replace(R.id.fragment_container, m_articleFragment);
-	fragmentTransaction.addToBackStack(null);
-	fragmentTransaction.commit();
-	m_articleFragment.setContent(content);
-}     
+	       NewsFeedXmlParser parser = new NewsFeedXmlParser();
+	       ArrayList<Article> items = parser.parse(is);
+	       return items;
+      
+        // Makes sure that the InputStream is closed after the app is
+        // finished using it.
+        } catch (XmlPullParserException e) {
+		   e.printStackTrace();
+	    } finally {
+           if (is != null) {
+              is.close();
+           } 
+        }
+        return null;
+    }
 
-public void resetList() {
-	int count = 0;
-	for(Article a : m_arrItems){
-		count = m_listFragment.addArticle(a);
+	@Override
+	public void onArticleSelected(int pos) {
+		openArticleFragment(pos);
+	}     
+
+	public void openArticleFragment(int pos) {
+		this.m_articlePosition = pos;
+		FragmentManager fragmentManager = getSupportFragmentManager();
+		FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+		m_articleFragment = new ArticleFragment();
+		
+		fragmentTransaction.replace(R.id.fragment_container, m_articleFragment, itemTag);
+		fragmentTransaction.addToBackStack(itemTag);
+		fragmentTransaction.commit();
+		m_articleFragment.setContent(this.m_arrItems.get(pos).getContent());		
 	}
-	Log.d("resetList",count + " added.");
-}
+	
+	public void resetList() {
+		int count = 0;
+		for(Article a : m_arrItems){
+			count = m_listFragment.addArticle(a);
+		}
+		Log.d("resetList",count + " added.");
+	}
+	
+	public String getActiveFragment() {
+		int count = getSupportFragmentManager().getBackStackEntryCount();
+		if (count == 0) {
+			return null;
+		}
+		String tag = getSupportFragmentManager().getBackStackEntryAt(count - 1).getName();
+		return tag;
+	}
 }

@@ -17,6 +17,7 @@ public class ArticleFragment extends Fragment {
 	private String style = "<style type='text/css'>" +
             "img {height:250px; width:250px}" +
             ".toggle-head-open,.toggle-head-close {display:none;}" +
+            "iframe {height:250px; width:250px}" +
             "</style>";
 	
 	@Override

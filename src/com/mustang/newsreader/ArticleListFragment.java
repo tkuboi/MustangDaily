@@ -18,34 +18,25 @@ public class ArticleListFragment extends ListFragment {
 	protected ListView m_vwItemLayout;
 	protected OnArticleSelectedListener m_listener;
 
-
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
+		Log.d("ListFragment","onCreateView");
 		View view = inflater.inflate(R.layout.list_view, container, false);
 		this.m_arrItems = new ArrayList<Article>();
 		this.m_adapter = new ItemListAdapter(container.getContext(), m_arrItems);
 		setListAdapter(this.m_adapter);
-		//this.m_vwItemLayout = getListView();
-		//this.m_vwItemLayout.setAdapter(this.m_adapter);
-		/*this.m_vwItemLayout.setOnItemClickListener(new OnItemClickListener(){
-
-			@Override
-			public void onItemClick(AdapterView<?> parent, View view, int pos,
-					long id) {
-				Log.d("onItemClick","clicked");
-				Toast.makeText(view.getContext(), m_arrItems.get(pos).getContent(), Toast.LENGTH_LONG).show();
-			}
-			
-		});*/
-
 		return view;
 	}
 
 	@Override
 	public void onListItemClick(ListView l, View v, int pos, long id){
-		m_listener.onArticleSelected(m_arrItems.get(pos).getContent());
+		m_listener.onArticleSelected(pos);
 		//Toast.makeText(v.getContext(), m_arrItems.get(pos).getContent(), Toast.LENGTH_LONG).show();
+	}
+	
+	public void setArticles(ArrayList<Article> articles) {
+		this.m_arrItems = articles;
 	}
 	
 	public int addArticle(Article article) {
@@ -54,8 +45,12 @@ public class ArticleListFragment extends ListFragment {
 		return this.m_arrItems.size();
 	}
 	
+	public void notifyDataChanged() {
+		m_adapter.notifyDataSetChanged();
+	}
+	
 	public interface OnArticleSelectedListener {
-		public void onArticleSelected(String content);
+		public void onArticleSelected(int pos);
 	}
 	
 	@Override
