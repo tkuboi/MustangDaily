@@ -21,6 +21,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.Menu;
+import android.widget.Toast;
 
 public class MainActivity extends FragmentActivity 
                        implements OnArticleSelectedListener {
@@ -50,6 +51,8 @@ public class MainActivity extends FragmentActivity
 		fragmentTransaction.replace(R.id.fragment_container, m_listFragment, listTag);
 		fragmentTransaction.addToBackStack(listTag);
 		fragmentTransaction.commit();
+		this.m_activeFragTag = listTag;
+		this.m_articlePosition = 0;
 		if (savedInstanceState == null || this.m_arrItems.size() == 0) //download xml only in fresh-start
 		    xmlHandler();
 	}
@@ -65,9 +68,14 @@ public class MainActivity extends FragmentActivity
 	public void onSaveInstanceState(Bundle outState){
 		m_dataHandler.setArticles(m_arrItems);
 		String tag = getActiveFragment();
-		if (tag != null && !tag.contentEquals(listTag)) {
+		//if (tag != null && !tag.contentEquals(listTag)) {
+		if (tag != null) {
 			outState.putString("FRAGMENT_TAG", tag);
 			outState.putInt("ARTICLE_POSITION", m_articlePosition);
+		}
+		else {
+			outState.putString("FRAGMENT_TAG", listTag);
+			outState.putInt("ARTICLE_POSITION", 0);			
 		}
 		
 		super.onSaveInstanceState(outState);
@@ -83,8 +91,10 @@ public class MainActivity extends FragmentActivity
 		if (tag != null) {
 			this.m_articlePosition = inState.getInt("ARTICLE_POSITION");
 			this.m_activeFragTag = tag;
-			openArticleFragment(this.m_articlePosition);
+			if (this.m_activeFragTag == itemTag)
+				openArticleFragment(this.m_articlePosition);
 		}
+		
 		Log.d("onRestoreInstanceState","onRestoreInstanceState");
 	}
 	
@@ -98,6 +108,7 @@ public class MainActivity extends FragmentActivity
         if (networkInfo != null && networkInfo.isConnected()) {
             new DownloadXmlTask().execute(feedurl);
         } else {
+        	Toast.makeText(getApplicationContext(), "No network connection available.", Toast.LENGTH_LONG).show();
             //textView.setText("No network connection available.");
         }
     }
@@ -114,14 +125,17 @@ public class MainActivity extends FragmentActivity
               
             // params comes from the execute() call: params[0] is the url.
             try {
+            	m_arrItems.clear();
             	m_arrItems = (ArrayList<Article>) downloadXml(feedurl);
             	if (m_arrItems.size() > 0){
                     return "success";
             	}
             	return "empty";
             } catch (IOException e) {
-                return "failed";
+            	Log.e("IOException", e.getMessage());
+                return "failed : " + e.getMessage();
             }
+            
         }
         
         @Override
@@ -135,8 +149,10 @@ public class MainActivity extends FragmentActivity
         		}
         		Log.d("addItems",count + " added.");
         	}
-        	else
-        		Log.d("parser",result);
+        	else {
+        		Toast.makeText(getApplicationContext(), "Could not download articles. Please contact the Mustang Daily.", Toast.LENGTH_LONG).show();
+        		Log.e("parser",result);
+        	}
         }
         
     }
@@ -146,7 +162,7 @@ public class MainActivity extends FragmentActivity
     // a string.
     private List<Article> downloadXml(String myurl) throws IOException {
        InputStream is = null;
-          
+       ArrayList<Article> items = new ArrayList<Article>();
        try {
            URL url = new URL(myurl);
            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -161,19 +177,20 @@ public class MainActivity extends FragmentActivity
 	       is = conn.getInputStream();
 	
 	       NewsFeedXmlParser parser = new NewsFeedXmlParser();
-	       ArrayList<Article> items = parser.parse(is);
-	       return items;
+	       items = parser.parse(is);
+	       //return items;
       
         // Makes sure that the InputStream is closed after the app is
         // finished using it.
         } catch (XmlPullParserException e) {
+        	Log.e("XmlPullParserException",e.getMessage());
 		   e.printStackTrace();
 	    } finally {
            if (is != null) {
               is.close();
            } 
         }
-        return null;
+        return items;
     }
 
 	@Override
