@@ -25,7 +25,7 @@ public class NewsFeedXmlParser {
    
     public ArrayList<Article> parse(InputStream in) throws XmlPullParserException, IOException {
         try {
-        	//Log.d("dedug","in parse");
+        	Log.d("dedug","in parse");
             XmlPullParser parser = Xml.newPullParser();
             parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
             parser.setInput(in, null);
@@ -41,8 +41,10 @@ public class NewsFeedXmlParser {
     private int readFeed(XmlPullParser parser) throws XmlPullParserException, IOException {
     	int readCount = 0;
         //Log.d("debug","readFeed");
-        if(parser == null)
+        if(parser == null) {
         	Log.d("debug", "parser is null");
+        	return 0;
+        }
         parser.require(XmlPullParser.START_TAG, ns, "rss");
         while (parser.next() != XmlPullParser.END_TAG) {
 	       if (parser.getEventType() != XmlPullParser.START_TAG) {

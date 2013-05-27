@@ -6,32 +6,36 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.xmlpull.v1.XmlPullParserException;
-
+import com.actionbarsherlock.app.SherlockFragmentActivity;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
 import com.mustang.newsreader.ArticleListFragment.OnArticleSelectedListener;
+import com.mustang.newsreader.MenuFragment.OnMenuArticleSelectedListener;
 
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.content.Context;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
-import android.view.Menu;
 import android.widget.Toast;
 
-public class MainActivity extends FragmentActivity 
-                       implements OnArticleSelectedListener {
+public class MainActivity extends SherlockFragmentActivity 
+                       implements OnArticleSelectedListener,
+                                  OnMenuArticleSelectedListener {
 
 	private static String feedurl = "http://mustangdaily.net/feed/";
 	private static String listTag = "TAG_LIST";
 	private static String itemTag = "TAG_ITEM";
+	private static String menuTag = "TAG_MENU";
 	private ArrayList<Article> m_arrItems;
 	private ArticleListFragment m_listFragment;
 	private ArticleFragment m_articleFragment;
+	private MenuFragment m_menuFragment;
 	private DataHandler m_dataHandler;
 	private String m_activeFragTag; //tag of active fragment when the orientation changed
 	private int m_articlePosition;  //postition of article viewed when the orientation changed
@@ -58,12 +62,37 @@ public class MainActivity extends FragmentActivity
 	}
 
 	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.main, menu);
+	public boolean onCreateOptionsMenu(Menu menu)
+	{
+		MenuInflater inflater = this.getSupportMenuInflater();
+		inflater.inflate(R.menu.mainmenu, menu);
 		return true;
 	}
-	
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		int id = item.getItemId();
+		switch (id) {
+		case R.id.menu_home :
+			break;
+		case R.id.menu_menu :
+			FragmentManager fragmentManager = getSupportFragmentManager();
+			FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+			m_menuFragment = new MenuFragment();
+			fragmentTransaction.replace(R.id.fragment_container, m_menuFragment, menuTag);
+			fragmentTransaction.addToBackStack(menuTag);
+			fragmentTransaction.commit();
+			int size = m_menuFragment.setArticles(this.m_arrItems);
+			Toast.makeText(this, Integer.toString(size), Toast.LENGTH_LONG).show();
+			break;
+		case R.id.menu_refresh :
+			xmlHandler();
+			break;
+		case R.id.menu_settings :
+			break;
+		}
+		return true;
+	}
 	@Override
 	public void onSaveInstanceState(Bundle outState){
 		m_dataHandler.setArticles(m_arrItems);
@@ -225,5 +254,11 @@ public class MainActivity extends FragmentActivity
 		}
 		String tag = getSupportFragmentManager().getBackStackEntryAt(count - 1).getName();
 		return tag;
+	}
+
+	@Override
+	public void onMenuArticleSelected(int pos) {
+		openArticleFragment(pos);
+		//Toast.makeText(this, Integer.toString(this.m_arrItems.size()), Toast.LENGTH_LONG).show();
 	}
 }
