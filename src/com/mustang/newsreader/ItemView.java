@@ -1,6 +1,7 @@
 package com.mustang.newsreader;
 
 import android.content.Context;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.webkit.WebView;
 import android.widget.LinearLayout;
@@ -12,6 +13,7 @@ public class ItemView extends LinearLayout {
     private WebView m_vwImage;
     private TextView m_vwTitleText;
     private TextView m_vwDescText;
+    private LinearLayout m_lLayout;
 
 	public ItemView(Context context) {
 		super(context);
@@ -22,6 +24,7 @@ public class ItemView extends LinearLayout {
 		super(context);
 	    LayoutInflater inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 	    inflater.inflate(R.layout.item_view, this, true);
+	    this.m_lLayout = (LinearLayout) findViewById(R.id.parent);
         this.m_vwTitleText = (TextView) findViewById(R.id.titleView);
         this.m_vwDescText = (TextView) findViewById(R.id.descView);
 	    setItem(item);
@@ -41,5 +44,13 @@ public class ItemView extends LinearLayout {
         this.m_vwDescText.setText(m_article.getDescription());
 
 		this.requestLayout();
+	}
+	
+	public void setStyle(int text, int back, int size, boolean show) {
+		if(!show)
+			this.m_vwDescText.setVisibility(GONE);
+		this.m_vwTitleText.setTextColor(text);
+		this.m_vwTitleText.setTextSize(TypedValue.COMPLEX_UNIT_SP, size);
+		this.m_lLayout.setBackgroundColor(back);
 	}
 }

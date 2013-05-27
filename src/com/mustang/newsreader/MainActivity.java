@@ -11,9 +11,6 @@ import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
-import com.mustang.newsreader.ArticleListFragment.OnArticleSelectedListener;
-import com.mustang.newsreader.MenuFragment.OnMenuArticleSelectedListener;
-
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -25,8 +22,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 public class MainActivity extends SherlockFragmentActivity 
-                       implements OnArticleSelectedListener,
-                                  OnMenuArticleSelectedListener {
+                       implements OnArticleSelectedListener {
 
 	private static String feedurl = "http://mustangdaily.net/feed/";
 	private static String listTag = "TAG_LIST";
@@ -47,16 +43,7 @@ public class MainActivity extends SherlockFragmentActivity
 		//this.m_arrItems = new ArrayList<Article>();
 		m_dataHandler = DataHandler.getInstance();
 		this.m_arrItems = m_dataHandler.getArticles();
-	    FragmentManager fragmentManager = getSupportFragmentManager();
-		FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-		m_listFragment = new ArticleListFragment();
-		Log.d("onCreate", "after new ArticleListFragment");
-		//replace fragment instead of adding it for handling orientation change
-		fragmentTransaction.replace(R.id.fragment_container, m_listFragment, listTag);
-		fragmentTransaction.addToBackStack(listTag);
-		fragmentTransaction.commit();
-		this.m_activeFragTag = listTag;
-		this.m_articlePosition = 0;
+		openArticleListFragment();
 		if (savedInstanceState == null || this.m_arrItems.size() == 0) //download xml only in fresh-start
 		    xmlHandler();
 	}
@@ -74,16 +61,10 @@ public class MainActivity extends SherlockFragmentActivity
 		int id = item.getItemId();
 		switch (id) {
 		case R.id.menu_home :
+			openArticleListFragment();
 			break;
 		case R.id.menu_menu :
-			FragmentManager fragmentManager = getSupportFragmentManager();
-			FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-			m_menuFragment = new MenuFragment();
-			fragmentTransaction.replace(R.id.fragment_container, m_menuFragment, menuTag);
-			fragmentTransaction.addToBackStack(menuTag);
-			fragmentTransaction.commit();
-			int size = m_menuFragment.setArticles(this.m_arrItems);
-			Toast.makeText(this, Integer.toString(size), Toast.LENGTH_LONG).show();
+			openMenuFragment();
 			break;
 		case R.id.menu_refresh :
 			xmlHandler();
@@ -122,6 +103,8 @@ public class MainActivity extends SherlockFragmentActivity
 			this.m_activeFragTag = tag;
 			if (this.m_activeFragTag == itemTag)
 				openArticleFragment(this.m_articlePosition);
+			if (this.m_activeFragTag == menuTag)
+				openMenuFragment();
 		}
 		
 		Log.d("onRestoreInstanceState","onRestoreInstanceState");
@@ -171,7 +154,7 @@ public class MainActivity extends SherlockFragmentActivity
         protected void onPostExecute(String result) {
         	if (result.equalsIgnoreCase("success")){
         		Log.d("parser",result);
-        		//m_listFragment.notifyDataChanged();
+        		m_listFragment.clearData();
         		int count = 0;
         		for(Article a : m_arrItems){
             		count = m_listFragment.addArticle(a);
@@ -256,9 +239,28 @@ public class MainActivity extends SherlockFragmentActivity
 		return tag;
 	}
 
-	@Override
-	public void onMenuArticleSelected(int pos) {
-		openArticleFragment(pos);
-		//Toast.makeText(this, Integer.toString(this.m_arrItems.size()), Toast.LENGTH_LONG).show();
+	public void openArticleListFragment() {
+		FragmentManager fragmentManager = getSupportFragmentManager();
+		FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+		m_listFragment = new ArticleListFragment();
+		Log.d("onCreate", "after new ArticleListFragment");
+		//replace fragment instead of adding it for handling orientation change
+		fragmentTransaction.replace(R.id.fragment_container, m_listFragment, listTag);
+		fragmentTransaction.addToBackStack(listTag);
+		fragmentTransaction.commit();
+		this.m_activeFragTag = listTag;
+		this.m_articlePosition = 0;
+	}
+	
+	public void openMenuFragment() {
+		FragmentManager fragmentManager = getSupportFragmentManager();
+		FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+		m_menuFragment = new MenuFragment();
+		//m_menuFragment.setArticles(this.m_arrItems);
+		fragmentTransaction.replace(R.id.fragment_container, m_menuFragment, menuTag);
+		fragmentTransaction.addToBackStack(menuTag);
+		fragmentTransaction.commit();
+		int size = m_menuFragment.setArticles(this.m_arrItems);
+		//Toast.makeText(this, Integer.toString(size), Toast.LENGTH_LONG).show();
 	}
 }

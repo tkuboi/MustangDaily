@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,10 +14,33 @@ public class ItemListAdapter extends BaseAdapter {
 
 	private Context m_context;
 	private List<Article> m_itemList;
+	private int m_backgroundColor;
+	private int m_textColor;
+	private int m_textSize;
+	private boolean m_showDescription;
 	
 	public ItemListAdapter(Context context, ArrayList<Article> list) {
 		m_context = context;
 		m_itemList = list;
+		m_showDescription = true;
+		m_textSize = 26;
+		m_backgroundColor = Color.WHITE;
+		m_textColor = Color.BLACK;
+	}
+	
+	public ItemListAdapter(Context context, ArrayList<Article> list, boolean show) {
+		m_context = context;
+		m_itemList = list;
+		m_showDescription = show;
+		m_textSize = 26;
+		m_backgroundColor = Color.WHITE;
+		m_textColor = Color.BLACK;
+	}
+
+	public void setStyle(int text, int back, int size) {
+		m_textColor = text;
+		m_backgroundColor = back;
+		m_textSize = size;
 	}
 	
 	@Override
@@ -46,6 +70,9 @@ public class ItemListAdapter extends BaseAdapter {
 			view = (ItemView)convertView;
 		}
 		view.setItem(m_itemList.get(position));
+		if (!m_showDescription) {
+			view.setStyle(m_textColor, m_backgroundColor, m_textSize, m_showDescription);
+		}
 		return view;
 	}
 

@@ -49,10 +49,7 @@ public class ArticleListFragment extends ListFragment {
 		m_adapter.notifyDataSetChanged();
 	}
 	
-	public interface OnArticleSelectedListener {
-		public void onArticleSelected(int pos);
-	}
-	
+
 	@Override
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
@@ -72,6 +69,10 @@ public class ArticleListFragment extends ListFragment {
 	        if (this.m_arrItems.size() == 0)
 	        	((MainActivity)getActivity()).resetList();
 		}
-		
+	}
+	
+	public void clearData() {
+		this.m_arrItems.clear();
+		m_adapter.notifyDataSetChanged();
 	}
 }
