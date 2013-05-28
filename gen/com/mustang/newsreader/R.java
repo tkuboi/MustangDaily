@@ -10,7 +10,6 @@ package com.mustang.newsreader;
 public final class R {
     public static final class array {
         public static final int categories=0x7f0b0000;
-        public static final int interval_arrays=0x7f0b0001;
     }
     public static final class attr {
         /**  Custom divider drawable to use for elements in the action bar. 
@@ -940,7 +939,7 @@ containing a value of this type.
         public static final int abs__list_item=0x7f040019;
         public static final int abs__progress_circular=0x7f04000e;
         public static final int abs__progress_horizontal=0x7f04000f;
-        public static final int abs__radio=0x7f04001e;
+        public static final int abs__radio=0x7f04001d;
         public static final int abs__search_badge=0x7f040028;
         public static final int abs__search_bar=0x7f040027;
         public static final int abs__search_button=0x7f040029;
@@ -951,22 +950,23 @@ containing a value of this type.
         public static final int abs__search_plate=0x7f04002c;
         public static final int abs__search_src_text=0x7f04002d;
         public static final int abs__search_voice_btn=0x7f040031;
-        public static final int abs__shortcut=0x7f04001d;
+        public static final int abs__shortcut=0x7f04001e;
         public static final int abs__split_action_bar=0x7f040023;
         public static final int abs__submit_area=0x7f04002f;
         public static final int abs__textButton=0x7f040013;
         public static final int abs__title=0x7f04001b;
         public static final int abs__up=0x7f04000b;
+        public static final int action_settings=0x7f04003f;
+        public static final int applyButton=0x7f04003c;
         public static final int autoRefreshCheckbox=0x7f04003b;
+        public static final int cancelButton=0x7f04003d;
         public static final int descView=0x7f040039;
         public static final int disableHome=0x7f040009;
         public static final int edit_query=0x7f040026;
         public static final int fragment_container=0x7f040033;
         public static final int fragment_container2=0x7f040034;
         public static final int homeAsUp=0x7f040006;
-        public static final int intervalSpinner=0x7f04003e;
         public static final int listMode=0x7f040002;
-        public static final int manualRefreshText=0x7f04003c;
         public static final int menu_home=0x7f040040;
         public static final int menu_menu=0x7f040041;
         public static final int menu_refresh=0x7f040042;
@@ -974,14 +974,13 @@ containing a value of this type.
         public static final int normal=0x7f040001;
         public static final int parent=0x7f040037;
         public static final int parentFrame=0x7f040032;
-        public static final int refreshIntervalText=0x7f04003d;
         public static final int refreshSettingsText=0x7f04003a;
         public static final int root=0x7f040035;
         public static final int showCustom=0x7f040008;
         public static final int showHome=0x7f040005;
         public static final int showTitle=0x7f040007;
         public static final int tabMode=0x7f040003;
-        public static final int tabs=0x7f04003f;
+        public static final int tabs=0x7f04003e;
         public static final int titleView=0x7f040038;
         public static final int useLogo=0x7f040004;
         public static final int webView=0x7f040036;
@@ -1003,27 +1002,27 @@ containing a value of this type.
         public static final int abs__activity_chooser_view_list_item=0x7f030009;
         public static final int abs__list_menu_item_checkbox=0x7f03000a;
         public static final int abs__list_menu_item_icon=0x7f03000b;
-        public static final int abs__list_menu_item_layout=0x7f03000c;
-        public static final int abs__list_menu_item_radio=0x7f03000d;
-        public static final int abs__popup_menu_item_layout=0x7f03000e;
-        public static final int abs__screen_action_bar=0x7f03000f;
-        public static final int abs__screen_action_bar_overlay=0x7f030010;
-        public static final int abs__screen_simple=0x7f030011;
-        public static final int abs__screen_simple_overlay_action_mode=0x7f030012;
-        public static final int abs__search_dropdown_item_icons_2line=0x7f030013;
-        public static final int abs__search_view=0x7f030014;
-        public static final int abs__simple_dropdown_hint=0x7f030015;
-        public static final int activity_main=0x7f030016;
-        public static final int article_view=0x7f030017;
-        public static final int item_view=0x7f030018;
-        public static final int list_view=0x7f030019;
-        public static final int refresh_view=0x7f03001a;
-        public static final int sherlock_spinner_dropdown_item=0x7f03001b;
-        public static final int sherlock_spinner_item=0x7f03001c;
-        public static final int tab_menu=0x7f03001d;
+        public static final int abs__list_menu_item_radio=0x7f03000c;
+        public static final int abs__popup_menu_item_layout=0x7f03000d;
+        public static final int abs__screen_action_bar=0x7f03000e;
+        public static final int abs__screen_action_bar_overlay=0x7f03000f;
+        public static final int abs__screen_simple=0x7f030010;
+        public static final int abs__screen_simple_overlay_action_mode=0x7f030011;
+        public static final int abs__search_dropdown_item_icons_2line=0x7f030012;
+        public static final int abs__search_view=0x7f030013;
+        public static final int abs__simple_dropdown_hint=0x7f030014;
+        public static final int activity_main=0x7f030015;
+        public static final int article_view=0x7f030016;
+        public static final int item_view=0x7f030017;
+        public static final int list_view=0x7f030018;
+        public static final int refresh_view=0x7f030019;
+        public static final int sherlock_spinner_dropdown_item=0x7f03001a;
+        public static final int sherlock_spinner_item=0x7f03001b;
+        public static final int tab_menu=0x7f03001c;
     }
     public static final class menu {
-        public static final int mainmenu=0x7f0c0000;
+        public static final int main=0x7f0c0000;
+        public static final int mainmenu=0x7f0c0001;
     }
     public static final class string {
         /**  Content description for the action bar "home" affordance. [CHAR LIMIT=NONE] 
@@ -1068,14 +1067,13 @@ containing a value of this type.
         public static final int action_settings=0x7f09000e;
         public static final int app_name=0x7f09000d;
         public static final int auto_refresh=0x7f090015;
+        public static final int button_apply=0x7f090016;
+        public static final int button_cancel=0x7f090017;
         public static final int hello_world=0x7f09000f;
-        public static final int interval_prompt=0x7f090018;
-        public static final int manual_refresh_settings=0x7f090016;
         public static final int menuTitle_home=0x7f090010;
         public static final int menuTitle_menu=0x7f090011;
         public static final int menuTitle_refresh=0x7f090013;
         public static final int menuTitle_settings=0x7f090012;
-        public static final int refresh_interval=0x7f090017;
         public static final int refresh_settings=0x7f090014;
     }
     public static final class style {

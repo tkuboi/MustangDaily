@@ -324,6 +324,7 @@ public class MainActivity extends SherlockFragmentActivity
 		FragmentManager fragmentManager = getSupportFragmentManager();
 		FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 		m_refreshFragment = new RefreshFragment();
+		m_refreshFragment.setContext(this);
 		//m_menuFragment.setArticles(this.m_arrItems);
 		fragmentTransaction.replace(R.id.fragment_container, m_refreshFragment, refreshTag);
 		fragmentTransaction.addToBackStack(refreshTag);

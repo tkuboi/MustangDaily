@@ -16,19 +16,7 @@
     <string name="menuTitle_refresh">Refresh</string>
     <string name="refresh_settings">Refresh Settings</string>
     <string name="auto_refresh">Auto Refresh</string>
-    <string name="manual_refresh_settings">Manual Refresh Settings</string>
-    <string name="refresh_interval">Refresh Interval:</string>
-    <string-array name="interval_arrays">
-        <item>One Hour</item>
-        <item>Two Hours</item>
-        <item>Three Hours</item>
-        <item>Four Hours</item>
-        <item>Five Hours</item>
-        <item>Six Hours</item>
-        <item>Seven Hours</item>
-        <item>Eight Hours</item>
-        <item>Nine Hours</item>
-    </string-array>
-    <string name="interval_prompt">Choose an interval</string>
+    <string name="button_apply">Apply</string>
+    <string name="button_cancel">Cancel</string>
 
 </resources>
