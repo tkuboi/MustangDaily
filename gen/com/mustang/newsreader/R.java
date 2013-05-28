@@ -689,10 +689,11 @@ containing a value of this type.
         public static final int abs__bright_foreground_disabled_holo_light=0x7f060005;
         public static final int abs__bright_foreground_holo_dark=0x7f060002;
         public static final int abs__bright_foreground_holo_light=0x7f060003;
-        public static final int abs__primary_text_disable_only_holo_dark=0x7f060006;
-        public static final int abs__primary_text_disable_only_holo_light=0x7f060007;
-        public static final int abs__primary_text_holo_dark=0x7f060008;
-        public static final int abs__primary_text_holo_light=0x7f060009;
+        public static final int abs__primary_text_disable_only_holo_dark=0x7f060007;
+        public static final int abs__primary_text_disable_only_holo_light=0x7f060008;
+        public static final int abs__primary_text_holo_dark=0x7f060009;
+        public static final int abs__primary_text_holo_light=0x7f06000a;
+        public static final int backgroundWhite=0x7f060006;
     }
     public static final class dimen {
         /**  Default height of an action bar. 
@@ -913,8 +914,15 @@ containing a value of this type.
         public static final int abs__textfield_searchview_right_holo_dark=0x7f02006d;
         public static final int abs__textfield_searchview_right_holo_light=0x7f02006e;
         public static final int abs__toast_frame=0x7f02006f;
-        public static final int ic_launcher=0x7f020070;
-        public static final int mustangheader=0x7f020071;
+        public static final int action_settings=0x7f020070;
+        public static final int backgroundimg=0x7f020071;
+        public static final int collections_view_as_list=0x7f020072;
+        public static final int ic_launcher=0x7f020073;
+        public static final int ic_menu_home=0x7f020074;
+        public static final int mustangheader=0x7f020075;
+        public static final int navigation_next_item=0x7f020076;
+        public static final int navigation_previous_item=0x7f020077;
+        public static final int navigation_refresh=0x7f020078;
     }
     public static final class id {
         public static final int abs__action_bar=0x7f040020;
@@ -1140,6 +1148,7 @@ containing a value of this type.
         public static final int TextAppearance_Sherlock_Widget_PopupMenu_Large=0x7f0a0040;
         public static final int TextAppearance_Sherlock_Widget_PopupMenu_Small=0x7f0a0042;
         public static final int TextAppearance_Sherlock_Widget_TextView_SpinnerItem=0x7f0a0044;
+        public static final int Theme_LogoBackground=0x7f0a005b;
         public static final int Theme_Sherlock=0x7f0a0054;
         public static final int Theme_Sherlock_Light=0x7f0a0055;
         public static final int Theme_Sherlock_Light_DarkActionBar=0x7f0a0056;

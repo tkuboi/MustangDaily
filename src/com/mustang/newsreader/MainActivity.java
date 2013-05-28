@@ -66,10 +66,10 @@ public class MainActivity extends SherlockFragmentActivity
 		this.m_interval = 1;
 		m_dataHandler = DataHandler.getInstance();
 		this.m_arrItems = m_dataHandler.getArticles();
-		this.m_headerImage = new ImageView(this);
-		this.m_headerImage.setImageResource(R.drawable.ic_launcher);
+		//this.m_headerImage = new ImageView(this);
+		//this.m_headerImage.setImageResource(R.drawable.ic_launcher);
 		//this.m_headerImage.bringToFront();
-		this.m_headerImage.setVisibility(View.VISIBLE);
+		//this.m_headerImage.setVisibility(View.VISIBLE);
 		//LinearLayout layout = (LinearLayout) findViewById(R.id.parentFrame);
 		//layout.addView(this.m_headerImage);
 		openArticleListFragment();
@@ -223,7 +223,10 @@ public class MainActivity extends SherlockFragmentActivity
             		count++;
             		m_listFragment.notifyDataChanged();
         		}
-        		m_headerImage.setVisibility(View.GONE);
+        		//m_headerImage.setVisibility(View.GONE);
+        		//getWindow().setBackgroundDrawable(null);
+        		//getWindow().setBackgroundDrawableResource();
+        		getWindow().setBackgroundDrawableResource(R.color.backgroundWhite);
         		Log.d("addItems",count + " added.");
         	}
         	else {
@@ -390,4 +393,23 @@ public class MainActivity extends SherlockFragmentActivity
     public void onLoaderReset(Loader<Cursor> loader) {
     }
 
+	@Override
+	public void onBackPressed() {
+	    if (m_articleFragment.getCustomViewContainer() != null) {
+	        m_articleFragment.hideCustomView();
+	    }
+	    else if (m_articleFragment.getWebView().canGoBack()) {
+	        m_articleFragment.getWebView().goBack();
+	    }   
+	    else {
+	        super.onBackPressed();
+	    }
+	}
+	
+	@Override
+	public void onResume(){
+		super.onResume();
+		if (this.m_arrItems.size() > 0)
+			getWindow().setBackgroundDrawableResource(R.color.backgroundWhite);
+	}
 }

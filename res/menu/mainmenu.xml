@@ -4,21 +4,25 @@
         android:id="@+id/menu_home"
         android:orderInCategory="1"
         android:showAsAction="always"
+        android:icon="@drawable/ic_menu_home"
         android:title="@string/menuTitle_home"/>
     <item
         android:id="@+id/menu_menu"
         android:orderInCategory="2"
         android:showAsAction="always"
+        android:icon="@drawable/collections_view_as_list"
         android:title="@string/menuTitle_menu"/>
     <item
         android:id="@+id/menu_refresh"
         android:orderInCategory="3"
         android:showAsAction="always"
+        android:icon="@drawable/navigation_refresh"
         android:title="@string/menuTitle_refresh"/>
     <item
         android:id="@+id/menu_settings"
         android:orderInCategory="4"
         android:showAsAction="always"
+        android:icon="@drawable/action_settings"
         android:title="@string/menuTitle_settings"/>
 
 </menu>
