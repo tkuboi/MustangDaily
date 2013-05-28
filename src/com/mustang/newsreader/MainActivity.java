@@ -19,34 +19,49 @@ import android.content.Context;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 public class MainActivity extends SherlockFragmentActivity 
                        implements OnArticleSelectedListener {
 
-	private static String feedurl = "http://mustangdaily.net/feed/";
-	private static String listTag = "TAG_LIST";
-	private static String itemTag = "TAG_ITEM";
-	private static String menuTag = "TAG_MENU";
+	private static final String feedurl = "http://mustangdaily.net/feed/";
+	private static final String listTag = "TAG_LIST";
+	private static final String itemTag = "TAG_ITEM";
+	private static final String menuTag = "TAG_MENU";
+	private static final String SAVED_UPDSETTING = "AUTOUPDATE";
 	private ArrayList<Article> m_arrItems;
+	private ArrayList<Article> m_tempItems;
 	private ArticleListFragment m_listFragment;
 	private ArticleFragment m_articleFragment;
 	private MenuFragment m_menuFragment;
 	private DataHandler m_dataHandler;
 	private String m_activeFragTag; //tag of active fragment when the orientation changed
 	private int m_articlePosition;  //postition of article viewed when the orientation changed
+	private boolean m_autoUpdate;
+	private ImageView m_headerImage;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		//this.m_arrItems = new ArrayList<Article>();
+		
+		this.m_autoUpdate = true;
 		m_dataHandler = DataHandler.getInstance();
 		this.m_arrItems = m_dataHandler.getArticles();
 		openArticleListFragment();
-		if (savedInstanceState == null || this.m_arrItems.size() == 0) //download xml only in fresh-start
+		//download xml only in fresh-start
+		if (savedInstanceState == null || this.m_arrItems.size() == 0 || this.m_autoUpdate)
 		    xmlHandler();
 	}
+	
+	/*@Override
+	public void onStart(){
+		super.onStart();
+		if (this.m_autoUpdate || this.m_arrItems.size() == 0)
+			xmlHandler();
+		//openArticleListFragment();
+	}*/
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu)
@@ -70,13 +85,17 @@ public class MainActivity extends SherlockFragmentActivity
 			xmlHandler();
 			break;
 		case R.id.menu_settings :
+			if (this.m_autoUpdate)
+				this.m_autoUpdate = false;
+			else
+				this.m_autoUpdate = true;
 			break;
 		}
 		return true;
 	}
 	@Override
 	public void onSaveInstanceState(Bundle outState){
-		m_dataHandler.setArticles(m_arrItems);
+		//m_dataHandler.setArticles(m_arrItems);
 		String tag = getActiveFragment();
 		//if (tag != null && !tag.contentEquals(listTag)) {
 		if (tag != null) {
@@ -88,6 +107,7 @@ public class MainActivity extends SherlockFragmentActivity
 			outState.putInt("ARTICLE_POSITION", 0);			
 		}
 		
+		outState.putBoolean(SAVED_UPDSETTING, this.m_autoUpdate);
 		super.onSaveInstanceState(outState);
 		Log.d("onSaveInstanceState","onSaveInstanceState");
 	}
@@ -106,7 +126,7 @@ public class MainActivity extends SherlockFragmentActivity
 			if (this.m_activeFragTag == menuTag)
 				openMenuFragment();
 		}
-		
+		this.m_autoUpdate = inState.getBoolean(SAVED_UPDSETTING, true);
 		Log.d("onRestoreInstanceState","onRestoreInstanceState");
 	}
 	
@@ -137,9 +157,8 @@ public class MainActivity extends SherlockFragmentActivity
               
             // params comes from the execute() call: params[0] is the url.
             try {
-            	m_arrItems.clear();
-            	m_arrItems = (ArrayList<Article>) downloadXml(feedurl);
-            	if (m_arrItems.size() > 0){
+            	m_tempItems = (ArrayList<Article>) downloadXml(feedurl);
+            	if (m_tempItems.size() > 0){
                     return "success";
             	}
             	return "empty";
@@ -154,15 +173,18 @@ public class MainActivity extends SherlockFragmentActivity
         protected void onPostExecute(String result) {
         	if (result.equalsIgnoreCase("success")){
         		Log.d("parser",result);
-        		m_listFragment.clearData();
+        		m_arrItems.clear();
         		int count = 0;
-        		for(Article a : m_arrItems){
-            		count = m_listFragment.addArticle(a);
+        		for(Article a : m_tempItems){
+        			m_arrItems.add(a);
+            		count++;
+            		m_listFragment.notifyDataChanged();
         		}
+        		
         		Log.d("addItems",count + " added.");
         	}
         	else {
-        		Toast.makeText(getApplicationContext(), "Could not download articles. Please contact the Mustang Daily.", Toast.LENGTH_LONG).show();
+        		Toast.makeText(getApplicationContext(), "The server not available.", Toast.LENGTH_LONG).show();
         		Log.e("parser",result);
         	}
         }
@@ -190,7 +212,6 @@ public class MainActivity extends SherlockFragmentActivity
 	
 	       NewsFeedXmlParser parser = new NewsFeedXmlParser();
 	       items = parser.parse(is);
-	       //return items;
       
         // Makes sure that the InputStream is closed after the app is
         // finished using it.
@@ -222,13 +243,13 @@ public class MainActivity extends SherlockFragmentActivity
 		m_articleFragment.setContent(this.m_arrItems.get(pos).getContent());		
 	}
 	
-	public void resetList() {
+	/*public void resetList() {
 		int count = 0;
 		for(Article a : m_arrItems){
 			count = m_listFragment.addArticle(a);
 		}
 		Log.d("resetList",count + " added.");
-	}
+	}*/
 	
 	public String getActiveFragment() {
 		int count = getSupportFragmentManager().getBackStackEntryCount();

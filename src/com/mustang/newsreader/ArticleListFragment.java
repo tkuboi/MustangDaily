@@ -23,7 +23,8 @@ public class ArticleListFragment extends ListFragment {
 			Bundle savedInstanceState) {
 		Log.d("ListFragment","onCreateView");
 		View view = inflater.inflate(R.layout.list_view, container, false);
-		this.m_arrItems = new ArrayList<Article>();
+		DataHandler dataHandler = DataHandler.getInstance();
+		this.m_arrItems = dataHandler.getArticles();
 		this.m_adapter = new ItemListAdapter(container.getContext(), m_arrItems);
 		setListAdapter(this.m_adapter);
 		return view;
@@ -39,11 +40,11 @@ public class ArticleListFragment extends ListFragment {
 		this.m_arrItems = articles;
 	}
 	
-	public int addArticle(Article article) {
+	/*public int addArticle(Article article) {
 		this.m_arrItems.add(article);
 		m_adapter.notifyDataSetChanged();
 		return this.m_arrItems.size();
-	}
+	}*/
 	
 	public void notifyDataChanged() {
 		m_adapter.notifyDataSetChanged();
@@ -60,7 +61,7 @@ public class ArticleListFragment extends ListFragment {
 		}
 	}
 	
-	@Override
+	/*@Override
 	public void onResume() {
 		Log.d("OnResume","hi!");
 		super.onResume();
@@ -74,5 +75,5 @@ public class ArticleListFragment extends ListFragment {
 	public void clearData() {
 		this.m_arrItems.clear();
 		m_adapter.notifyDataSetChanged();
-	}
+	}*/
 }
