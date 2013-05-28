@@ -6,13 +6,14 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebChromeClient;
+import android.webkit.WebSettings.PluginState;
 import android.webkit.WebView;
-import android.widget.TextView;
+import android.webkit.WebViewClient;
 
 public class ArticleFragment extends Fragment {
-
+    
 	private WebView m_articleView;
-	private TextView m_textView;
 	private String m_content;
 	private String style = "<style type='text/css'>" +
             "img {height:250px; width:250px}" +
@@ -37,10 +38,12 @@ public class ArticleFragment extends Fragment {
 	public void onResume() {
 		super.onResume();
 		m_articleView = (WebView) getView().findViewById(R.id.webView);
-		//m_articleView.loadData(style + m_content, "text/html; charset=UTF-8", null);
+		m_articleView.setWebChromeClient(new WebChromeClient());
+		m_articleView.setWebViewClient(new WebViewClient());
+        m_articleView.getSettings().setJavaScriptEnabled(true);
+        m_articleView.getSettings().setPluginState(PluginState.ON_DEMAND);
 		m_articleView.loadDataWithBaseURL(null, style + m_content, "text/html", "UTF-8", null);
 	}
-	
 	
 	public void setContent(String content) {
 		m_content = content;

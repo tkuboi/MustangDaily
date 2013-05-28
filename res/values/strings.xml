@@ -18,5 +18,6 @@
     <string name="auto_refresh">Auto Refresh</string>
     <string name="button_apply">Apply</string>
     <string name="button_cancel">Cancel</string>
+    <string name="loading_video">Loading</string>
 
 </resources>

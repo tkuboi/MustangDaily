@@ -270,6 +270,7 @@ public class MainActivity extends SherlockFragmentActivity
 		FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 		m_articleFragment = new ArticleFragment();
 		
+		
 		fragmentTransaction.replace(R.id.fragment_container, m_articleFragment, itemTag);
 		fragmentTransaction.addToBackStack(itemTag);
 		fragmentTransaction.commit();

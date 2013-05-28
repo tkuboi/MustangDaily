@@ -1070,6 +1070,7 @@ containing a value of this type.
         public static final int button_apply=0x7f090016;
         public static final int button_cancel=0x7f090017;
         public static final int hello_world=0x7f09000f;
+        public static final int loading_video=0x7f090018;
         public static final int menuTitle_home=0x7f090010;
         public static final int menuTitle_menu=0x7f090011;
         public static final int menuTitle_refresh=0x7f090013;
