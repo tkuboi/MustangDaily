@@ -2,7 +2,6 @@ package com.mustang.newsreader;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.StringReader;
 import java.util.ArrayList;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -114,7 +113,7 @@ public class NewsFeedXmlParser {
     // Processes title tags in the feed.
     private String readTitle(XmlPullParser parser) throws IOException, XmlPullParserException {
         parser.require(XmlPullParser.START_TAG, null, "title");
-        String title = readText(parser);
+        String title = readTitleAndSummaryText(parser);
         parser.require(XmlPullParser.END_TAG, null, "title");
         return title;
     }
@@ -130,7 +129,7 @@ public class NewsFeedXmlParser {
     // Processes summary tags in the feed.
     private String readDescription(XmlPullParser parser) throws IOException, XmlPullParserException {
         parser.require(XmlPullParser.START_TAG, null, "description");
-        String summary = readText(parser);
+        String summary = readTitleAndSummaryText(parser);
         parser.require(XmlPullParser.END_TAG, null, "description");
         return summary;
     }
@@ -138,7 +137,7 @@ public class NewsFeedXmlParser {
     // Processes content tags in the feed.
     private String readContent(XmlPullParser parser) throws IOException, XmlPullParserException {
         parser.require(XmlPullParser.START_TAG, ns, "content:encoded");
-        String summary = readText(parser);
+        String summary = readContentText(parser);
         parser.require(XmlPullParser.END_TAG, ns, "content:encoded");
         return summary;
     }
@@ -159,11 +158,65 @@ public class NewsFeedXmlParser {
         return pubdate;
     }
     
+    private String formatResult(char[] ch) {
+        StringBuilder sb = new StringBuilder();
+        boolean escape = false;
+        
+        for(int i = 0; i < ch.length; i++) {
+            if(ch[i] == '<') {
+                escape = true;
+            }
+            else if(ch[i] == '>') {
+                escape = false;
+            }
+            else if(!escape) {
+                if(ch[i] == '&') {                    
+                    if(ch[i] == '&' && ch[i+1] == '#' && ch[i+2] == '8' && 
+                       ch[i+3] == '2' && ch[i+4] == '1' && ch[i+5] == '7' && 
+                       ch[i+6] == ';') {
+                        sb.append("\'");
+                        i += 6;
+                    }
+                    else if(ch[i] == '&' && ch[i+1] == '#' && ch[i+2] == '8' && 
+                            ch[i+3] == '2' && ch[i+4] == '3' && ch[i+5] == '0' && 
+                            ch[i+6] == ';') {
+                        sb.append("...");
+                        i += 6;
+                    }
+                    else if(ch[i] == '&' && ch[i+1] == '#' && ch[i+2] == '8' && 
+                            ch[i+3] == '2' && ch[i+4] == '2' && ch[i+5] == '0' && 
+                            ch[i+6] == ';') {
+                        sb.append("\"");
+                        i += 6;
+                    }
+                    else if(ch[i] == '&' && ch[i+1] == '#' && ch[i+2] == '8' && 
+                            ch[i+3] == '2' && ch[i+4] == '2' && ch[i+5] == '1' && 
+                            ch[i+6] == ';') {
+                        sb.append("\"");
+                        i += 6;
+                    }
+                    else if(ch[i] == '&' && ch[i+1] == 'a' && ch[i+2] == 'm' && 
+                            ch[i+3] == 'p' && ch[i+4] == ';') {
+                        sb.append("&");
+                        i += 4;
+                    }
+                    else {
+                        sb.append(ch[i]);
+                    }
+                }
+                else {
+                    sb.append(ch[i]);
+                }
+            }
+        }
+        
+        return sb.toString();
+    }
+    
     private void readResult(char[] ch) {
         StringBuilder sb = new StringBuilder();
         
         for(int i = 0; i < ch.length; i++) {
-            
             if((ch.length - i) > 6 && ch[i] == 'h' && ch[i+1] == 't' && ch[i + 2] == 't' && 
                     ch[i + 3] == 'p' && ch[i + 4] == ':' && ch[i + 5] == '/' && 
                     ch[i + 6] == '/') {
@@ -188,8 +241,17 @@ public class NewsFeedXmlParser {
         }
     }
     
-    // For the tags title and summary, extracts their text values.
-    private String readText(XmlPullParser parser) throws IOException, XmlPullParserException {
+    private String readTitleAndSummaryText(XmlPullParser parser) throws IOException, XmlPullParserException {
+        String result = "";
+        if (parser.next() == XmlPullParser.TEXT) {
+            result = formatResult(parser.getText().toCharArray());
+            parser.nextTag();
+        }
+        
+        return result;
+    }
+    
+    private String readContentText(XmlPullParser parser) throws IOException, XmlPullParserException {
         String result = "";
         if (parser.next() == XmlPullParser.TEXT) {
             result = parser.getText();
@@ -199,7 +261,17 @@ public class NewsFeedXmlParser {
         
         return result;
     }
-
+    
+    private String readText(XmlPullParser parser) throws IOException, XmlPullParserException {
+        String result = "";
+        if (parser.next() == XmlPullParser.TEXT) {
+            result = parser.getText();
+            parser.nextTag();
+        }
+        
+        return result;
+    }
+    
     private void skip(XmlPullParser parser) throws XmlPullParserException, IOException {
         if (parser.getEventType() != XmlPullParser.START_TAG) {
             throw new IllegalStateException();
