@@ -93,6 +93,23 @@ public class MainActivity extends SherlockFragmentActivity
 		inflater.inflate(R.menu.mainmenu, menu);
 		return true;
 	}
+	
+	@Override
+	public boolean onPrepareOptionsMenu(Menu menu) {
+		if(this.m_activeFragTag == itemTag) {
+			menu.getItem(3).setVisible(true);
+			menu.getItem(4).setVisible(true);
+			if(this.m_articlePosition >= this.m_arrItems.size()- 1)
+				menu.getItem(4).setEnabled(false);
+			if(this.m_articlePosition == 0)
+				menu.getItem(3).setEnabled(false);
+		}
+		else {
+			menu.getItem(3).setVisible(false);
+			menu.getItem(4).setVisible(false);			
+		}
+		return true;
+	}
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
@@ -109,6 +126,16 @@ public class MainActivity extends SherlockFragmentActivity
 			break;
 		case R.id.menu_settings :
 			openRefreshFragment();
+			break;
+		case R.id.menu_previous :
+			if(this.m_articlePosition > 0)
+				this.m_articlePosition--;
+			openArticleFragment(this.m_articlePosition);
+			break;
+		case R.id.menu_next :
+			if(this.m_articlePosition < this.m_arrItems.size()- 1)
+				this.m_articlePosition++;
+			openArticleFragment(this.m_articlePosition);
 			break;
 		}
 		return true;
@@ -286,8 +313,9 @@ public class MainActivity extends SherlockFragmentActivity
 		fragmentTransaction.replace(R.id.fragment_container, m_articleFragment, itemTag);
 		fragmentTransaction.addToBackStack(itemTag);
 		fragmentTransaction.commit();
-		m_articleFragment.setContent(this.m_arrItems.get(pos).getContent());
+		m_articleFragment.setContent(this.m_arrItems.get(pos));
 		this.m_activeFragTag = itemTag;
+		supportInvalidateOptionsMenu();
 	}
 	
 	/*public void resetList() {
@@ -318,6 +346,7 @@ public class MainActivity extends SherlockFragmentActivity
 		fragmentTransaction.commit();
 		this.m_activeFragTag = listTag;
 		this.m_articlePosition = 0;
+		supportInvalidateOptionsMenu();
 	}
 	
 	public void openMenuFragment() {
@@ -335,6 +364,7 @@ public class MainActivity extends SherlockFragmentActivity
 		fragmentTransaction.commit();
 		int size = m_menuFragment.setArticles(this.m_arrItems);
 		this.m_activeFragTag = menuTag;
+		supportInvalidateOptionsMenu();
 		//Toast.makeText(this, Integer.toString(size), Toast.LENGTH_LONG).show();
 	}
 	
@@ -349,6 +379,7 @@ public class MainActivity extends SherlockFragmentActivity
 		fragmentTransaction.commit();
 		//int size = m_menuFragment.setArticles(this.m_arrItems);
 		this.m_activeFragTag = refreshTag;
+		supportInvalidateOptionsMenu();
 		//Toast.makeText(this, Integer.toString(size), Toast.LENGTH_LONG).show();
 	}
 	

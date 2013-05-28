@@ -12,11 +12,14 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 public class ArticleFragment extends Fragment {
     
     private MainActivity activityContent;
 	private WebView m_articleView;
+	private TextView m_titleView;
+	private Article m_article;
 	private String m_content;
 	private String style = "<style type='text/css'>" +
             "img {height:250px; width:250px}" +
@@ -53,6 +56,8 @@ public class ArticleFragment extends Fragment {
 	@Override
 	public void onResume() {
 		super.onResume();
+		m_titleView = (TextView) getView().findViewById(R.id.title);
+		m_titleView.setText(m_article.getTitle());
 		m_articleView = (WebView) getView().findViewById(R.id.webView);
 		
 		m_articleView.setWebChromeClient(new WebChromeClient() {		    
@@ -120,7 +125,8 @@ public class ArticleFragment extends Fragment {
         }
 	}
 	
-	public void setContent(String content) {
-		m_content = content;
+	public void setContent(Article article) {
+		m_article = article;
+		m_content = m_article.getContent();
 	}
 }

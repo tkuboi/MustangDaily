@@ -5,6 +5,14 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
     
+    <TextView 
+        android:id="@+id/title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+        
+        
     <WebView android:id="@+id/webView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"/>

@@ -19,8 +19,20 @@
         android:icon="@drawable/navigation_refresh"
         android:title="@string/menuTitle_refresh"/>
     <item
-        android:id="@+id/menu_settings"
+        android:id="@+id/menu_previous"
         android:orderInCategory="4"
+        android:showAsAction="always"
+        android:icon="@drawable/navigation_previous_item"
+        android:title="@string/menuTitle_refresh"/>
+    <item
+        android:id="@+id/menu_next"
+        android:orderInCategory="5"
+        android:showAsAction="always"
+        android:icon="@drawable/navigation_next_item"
+        android:title="@string/menuTitle_refresh"/>
+    <item
+        android:id="@+id/menu_settings"
+        android:orderInCategory="6"
         android:showAsAction="always"
         android:icon="@drawable/action_settings"
         android:title="@string/menuTitle_settings"/>
