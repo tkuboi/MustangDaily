@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/refreshSettingsText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        android:text="@string/refresh_settings" />
+
+    <CheckBox
+        android:id="@+id/autoRefreshCheckbox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/auto_refresh" />
+    
+    <TextView
+        android:id="@+id/manualRefreshText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        android:text="@string/manual_refresh_settings" />
+    
+    <LinearLayout android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+        
+	    <TextView
+	        android:id="@+id/refreshIntervalText"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:textSize="15sp"
+	        android:text="@string/refresh_interval" />
+
+	    <Spinner
+	        android:id="@+id/intervalSpinner"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:entries="@array/interval_arrays"
+	        android:prompt="@string/interval_prompt" />
+	    
+    </LinearLayout>
+    
+</LinearLayout>

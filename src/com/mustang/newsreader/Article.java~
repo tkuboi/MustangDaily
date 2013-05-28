@@ -3,7 +3,6 @@ package com.mustang.newsreader;
 import java.util.ArrayList;
 
 public class Article {
-    private long id;
     private String title;
     private String pubdate;
     private String link;
@@ -13,17 +12,23 @@ public class Article {
     private ArrayList<String> categories;
 
     public Article() {
-        id = 0;
     }
+    
+    public Article(String title, String summary, String content) {
+        this.title = title;
+        this.description = summary;
+        this.content = content;
+    }
+    
+//    public Article(String title, String summary, String content, String pubdate, ArrayList<String> categories) {
+//        this.title = title;
+//        this.description = summary;
+//        this.content = content;
+//        this.categories = categories;
+//        this.pubdate = pubdate;
+//        this.imgsrc = imgsrc;
+//    }
 
-    public void setID(int id) {
-        this.id = id;
-    }
-    
-    public long getID() {
-        return this.id;
-    }
-    
 	public String getTitle() {
 		return this.title;
 	}
@@ -62,19 +67,6 @@ public class Article {
 	public ArrayList<String> getCategories() {
 		return this.categories;
 	}
-	
-	public String getCategoriesInString() {
-	    StringBuilder sb = new StringBuilder();
-	    
-	    for(String s : getCategories()) {
-	        sb.append(s + ",");
-	    }
-	    if(sb.length() > 0) {
-	        sb.replace(sb.length() - 1, sb.length(), "");
-	    }
-	    
-	    return sb.toString();
-	}
 
 	public void setCategories(ArrayList<String> categories) {
 		this.categories = categories;
@@ -105,19 +97,6 @@ public class Article {
 
 	public ArrayList<String> getImgsrc() {
 		return this.imgsrc;
-	}
-	
-	public String getImgsrcInString() {
-	    StringBuilder sb = new StringBuilder();
-        
-        for(String s : getImgsrc()) {
-            sb.append(s + ",");
-        }
-        if(sb.length() > 0) {
-            sb.replace(sb.length() - 1, sb.length(), "");
-        }
-        
-        return sb.toString();
 	}
 	
 	public int addImgsrc(String str) {

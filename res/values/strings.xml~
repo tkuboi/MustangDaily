@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">MustangDaily</string>
+    <string name="action_settings">Settings</string>
+    <string name="hello_world">Hello world!</string>
+    <string-array name="categories">
+        <item >Featured-Main</item>
+        <item >News</item>
+        <item >Arts</item>
+        <item >Sports</item>
+    </string-array>
+    <string name="menuTitle_home">Home</string>
+    <string name="menuTitle_menu">Menu</string>
+    <string name="menuTitle_settings">Settings</string>
+    <string name="menuTitle_refresh">Refresh</string>
+
+</resources>
