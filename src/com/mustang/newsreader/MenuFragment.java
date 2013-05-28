@@ -125,6 +125,10 @@ public class MenuFragment extends Fragment implements TabHost.TabContentFactory 
 			
 			private int translate(int pos) {
 				int result = 0;
+				if (pos >= m_filteredItems.size())
+					pos = m_filteredItems.size() - 1;
+				if (pos < 0)
+					pos = 0;
 				Article item = m_filteredItems.get(pos);
 				result = m_arrItems.indexOf(item);
 				return result;

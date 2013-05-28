@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-
 import java.util.ArrayList;
 import java.util.List;
 import org.xmlpull.v1.XmlPullParserException;
@@ -14,7 +13,6 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.opengl.Visibility;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.content.Context;
@@ -22,16 +20,8 @@ import android.content.res.Configuration;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
-import android.view.View;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.Toast;
-import android.content.ContentValues;
-import android.content.Context;
-import android.database.Cursor;
-import android.support.v4.content.CursorLoader;
-import android.support.v4.content.Loader;
-import android.net.Uri;
 
 public class MainActivity extends SherlockFragmentActivity 
                        implements OnArticleSelectedListener,
@@ -41,37 +31,26 @@ public class MainActivity extends SherlockFragmentActivity
 	private static final String listTag = "TAG_LIST";
 	private static final String itemTag = "TAG_ITEM";
 	private static final String menuTag = "TAG_MENU";
-	private static final String refreshTag = "TAG_REFRESH";
 	private static final String SAVED_UPDSETTING = "AUTOUPDATE";
 	private ArrayList<Article> m_arrItems;
 	private ArrayList<Article> m_tempItems;
 	private ArticleListFragment m_listFragment;
 	private ArticleFragment m_articleFragment;
 	private MenuFragment m_menuFragment;
-	private RefreshFragment m_refreshFragment;
 	private DataHandler m_dataHandler;
 	private String m_activeFragTag; //tag of active fragment when the orientation changed
 	private int m_articlePosition;  //postition of article viewed when the orientation changed
 	private boolean m_autoUpdate;
-	private int m_interval;
 	private ImageView m_headerImage;
-	private boolean m_isTablet;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		this.m_isTablet = isTablet(this);
+		
 		this.m_autoUpdate = true;
-		this.m_interval = 1;
 		m_dataHandler = DataHandler.getInstance();
 		this.m_arrItems = m_dataHandler.getArticles();
-		this.m_headerImage = new ImageView(this);
-		this.m_headerImage.setImageResource(R.drawable.ic_launcher);
-		//this.m_headerImage.bringToFront();
-		this.m_headerImage.setVisibility(View.VISIBLE);
-		//LinearLayout layout = (LinearLayout) findViewById(R.id.parentFrame);
-		//layout.addView(this.m_headerImage);
 		openArticleListFragment();
 		//download xml only in fresh-start
 		if (savedInstanceState == null || this.m_arrItems.size() == 0 || this.m_autoUpdate)
@@ -108,7 +87,10 @@ public class MainActivity extends SherlockFragmentActivity
 			xmlHandler();
 			break;
 		case R.id.menu_settings :
-			openRefreshFragment();
+			if (this.m_autoUpdate)
+				this.m_autoUpdate = false;
+			else
+				this.m_autoUpdate = true;
 			break;
 		}
 		return true;
@@ -223,7 +205,7 @@ public class MainActivity extends SherlockFragmentActivity
             		count++;
             		m_listFragment.notifyDataChanged();
         		}
-        		m_headerImage.setVisibility(View.GONE);
+        		
         		Log.d("addItems",count + " added.");
         	}
         	else {
@@ -318,34 +300,15 @@ public class MainActivity extends SherlockFragmentActivity
 	}
 	
 	public void openMenuFragment() {
-		int containerId;
-		if (this.m_isTablet)
-			containerId = R.id.fragment_subcontainer;
-		else
-			containerId = R.id.fragment_container;
 		FragmentManager fragmentManager = getSupportFragmentManager();
 		FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 		m_menuFragment = new MenuFragment();
 		//m_menuFragment.setArticles(this.m_arrItems);
-		fragmentTransaction.replace(containerId, m_menuFragment, menuTag);
+		fragmentTransaction.replace(R.id.fragment_container, m_menuFragment, menuTag);
 		fragmentTransaction.addToBackStack(menuTag);
 		fragmentTransaction.commit();
 		int size = m_menuFragment.setArticles(this.m_arrItems);
 		this.m_activeFragTag = menuTag;
-		//Toast.makeText(this, Integer.toString(size), Toast.LENGTH_LONG).show();
-	}
-	
-	public void openRefreshFragment() {
-		FragmentManager fragmentManager = getSupportFragmentManager();
-		FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-		m_refreshFragment = new RefreshFragment();
-		m_refreshFragment.setContext(this);
-		//m_menuFragment.setArticles(this.m_arrItems);
-		fragmentTransaction.replace(R.id.fragment_container, m_refreshFragment, refreshTag);
-		fragmentTransaction.addToBackStack(refreshTag);
-		fragmentTransaction.commit();
-		//int size = m_menuFragment.setArticles(this.m_arrItems);
-		this.m_activeFragTag = refreshTag;
 		//Toast.makeText(this, Integer.toString(size), Toast.LENGTH_LONG).show();
 	}
 	
@@ -354,22 +317,7 @@ public class MainActivity extends SherlockFragmentActivity
 	    boolean large = ((context.getResources().getConfiguration().screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK) == Configuration.SCREENLAYOUT_SIZE_LARGE);
 	    return (xlarge || large);
 	}
-	
-	public void setAutoUpdate(boolean b) {
-		this.m_autoUpdate = b;
-	}
 
-	public boolean getAutoUpdate() {
-		return this.m_autoUpdate;
-	}
-
-	public void setInterval(int h) {
-		this.m_interval = h;
-	}
-
-	public int getInterval() {
-		return this.m_interval;
-	}
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle bundle) {
         Uri contentUri = constructContentUri("articles", "#");
