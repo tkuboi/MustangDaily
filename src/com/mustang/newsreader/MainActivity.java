@@ -309,6 +309,7 @@ public class MainActivity extends SherlockFragmentActivity
 		FragmentManager fragmentManager = getSupportFragmentManager();
 		FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 		m_articleFragment = new ArticleFragment();
+		m_articleFragment.setActivityContent(this);
 		
 		fragmentTransaction.replace(R.id.fragment_container, m_articleFragment, itemTag);
 		fragmentTransaction.addToBackStack(itemTag);
@@ -426,12 +427,17 @@ public class MainActivity extends SherlockFragmentActivity
 
 	@Override
 	public void onBackPressed() {
-	    if (m_articleFragment.getCustomViewContainer() != null) {
-	        m_articleFragment.hideCustomView();
+	    if (m_articleFragment != null) {
+    	    if (m_articleFragment.getCustomViewContainer() != null) {
+    	        m_articleFragment.hideCustomView();
+    	    }
+    	    else if (m_articleFragment.getWebView().canGoBack()) {
+    	        m_articleFragment.getWebView().goBack();
+    	    }
+    	    else {
+                super.onBackPressed();
+            }
 	    }
-	    else if (m_articleFragment.getWebView().canGoBack()) {
-	        m_articleFragment.getWebView().goBack();
-	    }   
 	    else {
 	        super.onBackPressed();
 	    }
