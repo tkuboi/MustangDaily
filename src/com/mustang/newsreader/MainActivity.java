@@ -61,7 +61,7 @@ public class MainActivity extends SherlockFragmentActivity
 		m_dataHandler = DataHandler.getInstance();
 		this.m_arrItems = m_dataHandler.getArticles();
 		openArticleListFragment();
-		getSupportActionBar().setTitle("");
+		//getSupportActionBar().setTitle("");
 		//download xml only in fresh-start
 		if (savedInstanceState == null || this.m_arrItems.size() == 0 || this.m_autoUpdate)
 		    xmlHandler();
