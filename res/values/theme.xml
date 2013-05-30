@@ -17,6 +17,5 @@
     <color name="fourthcategory">@color/darkgoldenrod</color>
     <style name="Theme.LogoBackground" parent="Theme.Sherlock.Light">
         <item name="android:windowBackground">@drawable/backgroundimg</item>
-        <item name="android:windowNoTitle">true</item>
     </style>
 </resources>

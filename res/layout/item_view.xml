@@ -23,7 +23,7 @@
         android:textSize="26sp"
         android:focusable="false"
         android:focusableInTouchMode="false"
-        android:textIsSelectable="true" />
+        android:textIsSelectable="false" />
     
     <TextView
         android:id="@+id/descView"
@@ -32,6 +32,6 @@
         android:textSize="16sp"
         android:focusable="false"
         android:focusableInTouchMode="false"
-        android:textIsSelectable="true" />
+        android:textIsSelectable="false" />
     
 </LinearLayout>
