@@ -101,6 +101,7 @@ public class MenuFragment extends Fragment implements TabHost.TabContentFactory 
 	
 	@Override
 	public View createTabContent(String tag) {
+		Resources res = getResources();
 		if (this.m_arrItems == null) {
 		   DataHandler handler = DataHandler.getInstance();
 		   this.m_arrItems = handler.getArticles();
@@ -112,6 +113,9 @@ public class MenuFragment extends Fragment implements TabHost.TabContentFactory 
 		this.m_adapter.setStyle(Color.WHITE, bColor, m_textSize);
 		m_vwListView.setAdapter(this.m_adapter);
 		m_vwListView.setBackgroundColor(bColor);
+		m_vwListView.setDivider(res.getDrawable(R.drawable.list_divider_light));
+		m_vwListView.setDividerHeight(10);
+		m_vwListView.setPadding(10, 10, 10, 10);
 		filterArticles(tag);
 		//Toast.makeText(this.getActivity(), Integer.toString(m_filteredItems.size()), Toast.LENGTH_LONG).show();
 		m_vwListView.setOnItemClickListener(new OnItemClickListener(){
@@ -125,12 +129,20 @@ public class MenuFragment extends Fragment implements TabHost.TabContentFactory 
 			
 			private int translate(int pos) {
 				int result = 0;
-				if (pos >= m_filteredItems.size())
-					pos = m_filteredItems.size() - 1;
-				if (pos < 0)
-					pos = 0;
-				Article item = m_filteredItems.get(pos);
-				result = m_arrItems.indexOf(item);
+				if (m_filteredItems.size() > 0) {
+					if (pos >= m_filteredItems.size())
+						pos = m_filteredItems.size() - 1;
+					if (pos < 0)
+						pos = 0;
+					Article item = m_filteredItems.get(pos);
+					result = m_arrItems.indexOf(item);
+					if (result < 0)
+						result = pos;
+				}
+				else {
+					result = pos;
+				}
+				
 				return result;
 			}
 		});
@@ -163,10 +175,24 @@ public class MenuFragment extends Fragment implements TabHost.TabContentFactory 
 	}
 	
 	public int getTabColor(String tag) {
+		Resources res = getResources();
 		int color = 0;
 		for(int i = 0; i < m_categories.length; i++) {
 			if (m_categories[i] == tag) {
-				color = Color.rgb(i*50, 200 + i*10, 100 + i*50);
+				switch(i){
+				case 0:
+					color = res.getColor(R.color.firstcategory);
+					break;
+				case 1:
+					color = res.getColor(R.color.secondcategory);
+					break;
+				case 2:
+					color = res.getColor(R.color.thirdcategory);
+					break;
+				case 3:
+					color = res.getColor(R.color.fourthcategory);
+					break;
+				}
 			}
 		}
 		return color;
