@@ -21,6 +21,8 @@ import android.content.res.Configuration;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
+import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -337,6 +339,10 @@ public class MainActivity extends SherlockFragmentActivity
 	}
 
 	public void openArticleListFragment() {
+		if (this.m_isTablet){
+		    LinearLayout container = (LinearLayout) findViewById(R.id.fragment_subcontainer);
+		    container.setVisibility(View.GONE);
+		}
 		FragmentManager fragmentManager = getSupportFragmentManager();
 		FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 		m_listFragment = new ArticleListFragment();
@@ -352,8 +358,11 @@ public class MainActivity extends SherlockFragmentActivity
 	
 	public void openMenuFragment() {
 		int containerId;
-		if (this.m_isTablet)
+		if (this.m_isTablet){
 			containerId = R.id.fragment_subcontainer;
+		    LinearLayout container = (LinearLayout) findViewById(R.id.fragment_subcontainer);
+		    container.setVisibility(View.VISIBLE);
+		}
 		else
 			containerId = R.id.fragment_container;
 		FragmentManager fragmentManager = getSupportFragmentManager();
@@ -441,6 +450,7 @@ public class MainActivity extends SherlockFragmentActivity
 	    else {
 	        super.onBackPressed();
 	    }
+	    supportInvalidateOptionsMenu();
 	}
 	
 	@Override
