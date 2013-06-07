@@ -26,12 +26,17 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
+import android.view.GestureDetector;
+import android.view.GestureDetector.OnGestureListener;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -41,8 +46,8 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.net.Uri;
 
-public class MainActivity extends SherlockFragmentActivity 
-                       implements OnArticleSelectedListener,
+public class MainActivity extends SherlockFragmentActivity
+                       implements OnArticleSelectedListener, OnGestureListener,
                                   android.support.v4.app.LoaderManager.LoaderCallbacks<Cursor> {
 
 	private static final String feedurl = "http://mustangdaily.net/feed/";
@@ -64,6 +69,10 @@ public class MainActivity extends SherlockFragmentActivity
 	private int m_interval;
 	private boolean m_isTablet;
 	private ProgressDialog dialog;
+	
+	private static final int SWIPE_MIN_DISTANCE = 0;
+    private static final int SWIPE_THRESHOLD_VELOCITY = 0;
+	private GestureDetector gestureDetector;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -83,6 +92,8 @@ public class MainActivity extends SherlockFragmentActivity
 		if ((savedInstanceState == null && this.m_autoUpdate) || this.m_arrItems.size() == 0 ) {
 		    xmlHandler();
 		}
+		
+		gestureDetector = new GestureDetector(this, this, new Handler());
 	}
 	
 	/*@Override
@@ -397,7 +408,7 @@ public class MainActivity extends SherlockFragmentActivity
 		fragmentTransaction.replace(containerId, m_menuFragment, menuTag);
 		fragmentTransaction.addToBackStack(menuTag);
 		fragmentTransaction.commit();
-		int size = m_menuFragment.setArticles(this.m_arrItems);
+		m_menuFragment.setArticles(this.m_arrItems);
 		this.m_activeFragTag = menuTag;
 		supportInvalidateOptionsMenu();
 		//Toast.makeText(this, Integer.toString(size), Toast.LENGTH_LONG).show();
@@ -502,7 +513,6 @@ public class MainActivity extends SherlockFragmentActivity
 			URLConnection con = url.openConnection();
 	        InputStream is =con.getInputStream();
 	        Reader reader = new InputStreamReader(is);
-	        char c;
 	        String data = "";
 	        int chi = reader.read();
 			while(chi != -1){
@@ -536,4 +546,52 @@ public class MainActivity extends SherlockFragmentActivity
 
 		return src;
 	}
+
+	@Override
+    public boolean onTouchEvent(MotionEvent event){
+        return gestureDetector.onTouchEvent(event);
+    }
+	
+    @Override
+    public boolean onDown(MotionEvent e) {
+        return true;
+    }
+
+    @Override
+    public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
+            float velocityY) {
+        try {
+            // right to left swipe
+            if(e1.getX() - e2.getX() > SWIPE_MIN_DISTANCE && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
+                if (this.m_isTablet) {
+                    LinearLayout container = (LinearLayout) findViewById(R.id.fragment_subcontainer);
+                    container.setVisibility(View.GONE);
+                }
+            }
+            return true;
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    @Override
+    public void onLongPress(MotionEvent e) {        
+    }
+
+    @Override
+    public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX,
+            float distanceY) {
+        return false;
+    }
+
+    @Override
+    public void onShowPress(MotionEvent e) {
+    }
+
+    @Override
+    public boolean onSingleTapUp(MotionEvent e) {
+        return false;
+    }
 }
