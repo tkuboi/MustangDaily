@@ -2,20 +2,31 @@ package com.mustang.newsreader;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLConnection;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.xmlpull.v1.XmlPullParserException;
+
+import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
+
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.support.v4.app.FragmentManager;
@@ -52,6 +63,7 @@ public class MainActivity extends SherlockFragmentActivity
 	private boolean m_autoUpdate;
 	private int m_interval;
 	private boolean m_isTablet;
+	private ProgressDialog dialog;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -63,10 +75,14 @@ public class MainActivity extends SherlockFragmentActivity
 		m_dataHandler = DataHandler.getInstance();
 		this.m_arrItems = m_dataHandler.getArticles();
 		openArticleListFragment();
-		//getSupportActionBar().setTitle("");
+		ActionBar bar = getSupportActionBar();
+		if (bar != null)
+		   bar.setDisplayShowTitleEnabled(false);
+		
 		//download xml only in fresh-start
-		if (savedInstanceState == null || this.m_arrItems.size() == 0 || this.m_autoUpdate)
+		if ((savedInstanceState == null && this.m_autoUpdate) || this.m_arrItems.size() == 0 ) {
 		    xmlHandler();
+		}
 	}
 	
 	/*@Override
@@ -179,11 +195,13 @@ public class MainActivity extends SherlockFragmentActivity
     // When user strat the app, calls AsyncTask.
     // Before attempting to fetch the URL, makes sure that there is a network connection.
     public void xmlHandler() {
+    	
         // Gets the URL from the UI's text field.
         ConnectivityManager connMgr = (ConnectivityManager) 
             getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
         if (networkInfo != null && networkInfo.isConnected()) {
+        	showProgressDialog();
             new DownloadXmlTask().execute(feedurl);
         } else {
         	Toast.makeText(getApplicationContext(), "No network connection available.", Toast.LENGTH_LONG).show();
@@ -205,7 +223,7 @@ public class MainActivity extends SherlockFragmentActivity
      // an InputStream. Finally, the InputStream is converted into a string, which is
      // displayed in the UI by the AsyncTask's onPostExecute method.
      private class DownloadXmlTask extends AsyncTask<String, Void, String> {
-    	//private ArrayList<Article> list;
+    	
         @Override
         protected String doInBackground(String... urls) {
               
@@ -213,6 +231,11 @@ public class MainActivity extends SherlockFragmentActivity
             try {
             	m_tempItems = (ArrayList<Article>) downloadXml(feedurl);
             	if (m_tempItems.size() > 0){
+            		//String src = getImgSrc(m_tempItems.get(0).getLink());
+            		Log.d("getImgSrc",m_tempItems.get(0).getLink());
+            		/*ArrayList<String> imgsrc = new ArrayList<String>();
+            		imgsrc.add(src);
+            		m_tempItems.get(0).setImgsrc(imgsrc);*/
                     return "success";
             	}
             	return "empty";
@@ -262,6 +285,7 @@ public class MainActivity extends SherlockFragmentActivity
         		Toast.makeText(getApplicationContext(), "The server not available.", Toast.LENGTH_LONG).show();
         		Log.e("parser",result);
         	}
+        	dialog.dismiss();
         }
         
     }
@@ -343,6 +367,7 @@ public class MainActivity extends SherlockFragmentActivity
 		    LinearLayout container = (LinearLayout) findViewById(R.id.fragment_subcontainer);
 		    container.setVisibility(View.GONE);
 		}
+		
 		FragmentManager fragmentManager = getSupportFragmentManager();
 		FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 		m_listFragment = new ArticleListFragment();
@@ -458,5 +483,57 @@ public class MainActivity extends SherlockFragmentActivity
 		super.onResume();
 		if (this.m_arrItems.size() > 0)
 			getWindow().setBackgroundDrawableResource(R.color.backgroundWhite);
+	}
+	
+	public void showProgressDialog() {
+		dialog = new ProgressDialog(this);
+		dialog.setIndeterminate(true);
+		dialog.setCancelable(false);
+        dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        dialog.setMessage("Loading...");
+        dialog.show();
+	}
+	
+	public String getImgSrc(String link) {
+		String src = "";
+		URL url = null;
+		try {
+			url = new URL(link);
+			URLConnection con = url.openConnection();
+	        InputStream is =con.getInputStream();
+	        Reader reader = new InputStreamReader(is);
+	        char c;
+	        String data = "";
+	        int chi = reader.read();
+			while(chi != -1){
+				data += (char)chi;
+				chi = reader.read();
+			}
+			reader.close();
+			Log.d("get app","is.close");
+			is.close();
+			Pattern pattern = Pattern.compile("<article\\.*</article>");
+		    // In case you would like to ignore case sensitivity you could use this
+		    // statement
+		    // Pattern pattern = Pattern.compile("\\s+", Pattern.CASE_INSENSITIVE);
+		    Matcher matcher = pattern.matcher(data);
+		    // Check all occurance
+		    if (matcher.find()) {
+		    	data = matcher.group();
+		    	pattern = Pattern.compile("src=\"(http://\\.*.[jpg|png])\"");
+		    	matcher = pattern.matcher(data);
+		    	if (matcher.find()) {
+		    		src = matcher.group();
+		    	}
+		    }
+		} catch (MalformedURLException e) {
+			Log.d("malformed url exception",e.getMessage());
+			e.printStackTrace();
+		} catch (IOException e) {
+			Log.d("IO exception",e.getMessage());
+			e.printStackTrace();
+		}
+
+		return src;
 	}
 }

@@ -53,4 +53,8 @@ public class ItemView extends LinearLayout {
 		this.m_vwTitleText.setTextSize(TypedValue.COMPLEX_UNIT_SP, size);
 		this.m_lLayout.setBackgroundColor(back);
 	}
+	
+	public Article getArticle() {
+		return this.m_article;
+	}
 }

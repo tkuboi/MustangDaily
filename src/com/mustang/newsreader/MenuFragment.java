@@ -124,25 +124,13 @@ public class MenuFragment extends Fragment implements TabHost.TabContentFactory 
 			public void onItemClick(AdapterView<?> arg0, View view, int pos,
 					long id) {
 				//Toast.makeText(getActivity(), Integer.toString(pos) + " selected.", Toast.LENGTH_LONG).show();
-				m_listener.onArticleSelected(translate(pos));
+				m_listener.onArticleSelected(translate(((ItemView)view).getArticle()));
 			}
 			
-			private int translate(int pos) {
-				int result = 0;
-				if (m_filteredItems.size() > 0) {
-					if (pos >= m_filteredItems.size())
-						pos = m_filteredItems.size() - 1;
-					if (pos < 0)
-						pos = 0;
-					Article item = m_filteredItems.get(pos);
-					result = m_arrItems.indexOf(item);
-					if (result < 0)
-						result = pos;
-				}
-				else {
-					result = pos;
-				}
-				
+			private int translate(Article article) {
+				int result = m_arrItems.indexOf(article);
+				if (result < 0)
+				   result = 0;
 				return result;
 			}
 		});
