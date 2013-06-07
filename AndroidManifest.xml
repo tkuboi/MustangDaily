@@ -13,7 +13,7 @@
     <application
         android:hardwareAccelerated="true"
         android:allowBackup="true"
-        android:icon="@drawable/ic_launcher"
+        android:icon="@drawable/mdappicon"
         android:label="@string/app_name"
         android:theme="@style/Theme.LogoBackground" >
         <activity

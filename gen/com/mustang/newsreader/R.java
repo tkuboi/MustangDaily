@@ -935,14 +935,15 @@ containing a value of this type.
         public static final int ic_menu_home=0x7f020074;
         public static final int list_divider=0x7f020075;
         public static final int list_divider_light=0x7f020076;
-        public static final int mustangheader=0x7f020077;
-        public static final int navigation_next=0x7f020078;
-        public static final int navigation_next_item=0x7f020079;
-        public static final int navigation_next_item_disabled=0x7f02007a;
-        public static final int navigation_previous=0x7f02007b;
-        public static final int navigation_previous_item=0x7f02007c;
-        public static final int navigation_previous_item_disabled=0x7f02007d;
-        public static final int navigation_refresh=0x7f02007e;
+        public static final int mdappicon=0x7f020077;
+        public static final int mustangheader=0x7f020078;
+        public static final int navigation_next=0x7f020079;
+        public static final int navigation_next_item=0x7f02007a;
+        public static final int navigation_next_item_disabled=0x7f02007b;
+        public static final int navigation_previous=0x7f02007c;
+        public static final int navigation_previous_item=0x7f02007d;
+        public static final int navigation_previous_item_disabled=0x7f02007e;
+        public static final int navigation_refresh=0x7f02007f;
     }
     public static final class id {
         public static final int abs__action_bar=0x7f040020;
