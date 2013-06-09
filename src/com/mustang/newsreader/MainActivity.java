@@ -39,6 +39,7 @@ import android.view.GestureDetector.OnGestureListener;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -69,6 +70,7 @@ public class MainActivity extends SherlockFragmentActivity
 	private int m_interval;
 	private boolean m_isTablet;
 	private ProgressDialog dialog;
+	private ProgressBar progress;
 	
 	private static final int SWIPE_MIN_DISTANCE = 0;
     private static final int SWIPE_THRESHOLD_VELOCITY = 0;
@@ -78,6 +80,7 @@ public class MainActivity extends SherlockFragmentActivity
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		progress = (ProgressBar) findViewById(R.id.progressBar);
 		this.m_isTablet = isTablet(this);
 		this.m_autoUpdate = true;
 		this.m_interval = 1;
@@ -212,7 +215,8 @@ public class MainActivity extends SherlockFragmentActivity
             getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
         if (networkInfo != null && networkInfo.isConnected()) {
-        	showProgressDialog();
+        	//showProgressDialog();
+        	progress.setVisibility(View.VISIBLE);
             new DownloadXmlTask().execute(feedurl);
         } else {
         	Toast.makeText(getApplicationContext(), "No network connection available.", Toast.LENGTH_LONG).show();
@@ -296,7 +300,8 @@ public class MainActivity extends SherlockFragmentActivity
         		Toast.makeText(getApplicationContext(), "The server not available.", Toast.LENGTH_LONG).show();
         		Log.e("parser",result);
         	}
-        	dialog.dismiss();
+        	//dialog.dismiss();
+        	progress.setVisibility(View.GONE);
         }
         
     }

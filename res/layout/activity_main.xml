@@ -4,7 +4,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" >
-      
+
+    <ProgressBar
+                android:id="@+id/progressBar"
+                style="?android:attr/progressBarStyleLarge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone" />
+    
     <LinearLayout
         android:id="@+id/fragment_container"
         android:layout_width="match_parent"
@@ -12,4 +19,6 @@
         android:orientation="vertical" >
     
     </LinearLayout>
+    
+
 </LinearLayout>
